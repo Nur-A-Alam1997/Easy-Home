@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+
+Six Shooter Media Free Template
+http://www.sixshootermedia.com/free-templates/
+Released for free under a Creative Commons Attribution 2.5 License
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+
+    <meta name="author" content="">
+    <meta name="keywords" content="" />
+    <title>EasyHome</title>
+    <link href="../static/1.css?version=1" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+   function getvalue(Id) {
+       console.log(Id.childNodes[7].innerText);
+       // redirect("/description/"+Id.childNodes[7].innerText);
+       window.location.replace('http://127.0.0.1:5000/description/'+Id.childNodes[7].innerText);
+    }
+
+</script>
+<style>
+body{
+			font: 1rem/1.6 "Helvetica", Sans-serif;
+		}
+
+		main{
+			width: 90%;
+			margin:50px auto;
+
+			-moz-column-width: 220px;
+			-webkit-column-width: 220px;
+			column-width: 220px;
+
+			-moz-column-count: 2;
+			-webkit-column-count: 2;
+			column-count: 2;
+
+			-moz-column-gap: 20px;
+			-webkit-column-gap: 20px;
+			column-gap: 20px;
+
+		}
+
+		a[title] figure img{
+			width: 360px;
+			height: 280px;
+			margin-top:1rem;
+		}
+
+		p[title] figure img{
+		    width: 180px;
+			height: 140px;
+			margin-top:1rem;
+
+		}
+
+		main a[title]{
+			text-decoration: none;
+			padding: 1rem;
+			color:#424242;
+			box-shadow: 0 1px 3px rgba(0,0,0, .12), 0 1px 2px rgba(0,0,0, .24);
+			display: inline-block;
+
+			margin-bottom:20px;
+
+			transition: all .3s cubic-bezier(0.25, .8, .25, 1);
+		}
+
+		main:hover a[title]:not(:hover){
+			opacity: .6;
+		}
+
+		a[title]:hover{
+			box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .20);
+
+		}
+
+		.button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 11px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #31a6af;
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 5px #999;
+
+}
+</style>
+
+
+</head>
+<body>
+<div id="header">
+  <!-- This is where the image of the house goes -->
+  <p style="text-align:center;"><img src="../static/images/easyhome_logo.png"></p>
+
+</div>
+
+<!--h1 class="main_title"><a href="#">EasyHome</a></h1-->
+<div id="navigation" style="margin-top: -155px">
+          <ul id="nav">
+            <li><a href="/" style="font-size: 11px">Home</a></li>
+            <li><a href="#" style="font-size: 11px">About</a></li>
+            <li><a href="/post_ad" style="font-size: 11px">Post Your Ad</a></li>
+            {% if session.logged_in %}
+              <li><a href="#" style="font-size: 11px">My Profile</a></li>
+              <li><a href="/logout" style="font-size: 11px">Logout</a></li>
+            {% else %}
+              <li><a href="/registertrans" style="font-size: 11px">Register</a></li>
+              <li><a href="/logintransparent" style="font-size: 11px">Login</a></li>
+            {% endif %}
+
+          </ul>
+        </div>
+<div id="container">
+  <div id="inner_container">
+    {% block body %}
+        <h1 style= "margin-top: 10px;text-align: center">Profile</h1>
+
+         <p style="text-align: right">
+            <a href="/favourite"><button class="button" >My Favourites Ads</button></a>
+        </p>
+
+
+        <p style="text-align: right">
+            <a href="/edit_profile"><button class="button">Edit Profile</button></a>
+        </p>
+
+        <table style="border-collapse: unset;width: 100%">
+        <tr>
+        <td style="width: 50%">
+        <a title="Post">
+        <figure>
+        <img src="{{url_for('send_image',filename=usr_image)}}">
+        </figure>
+        </a>
+
+        <p style="margin-bottom: 2px"> {{session.username}} </p>
+    {% endblock %}
+        </td>
+        <td style="width: 50%; text-align: left">
+
+
+                {% for row in data %}
+
+                        <p style="size: 20px">Name: {{row[0]}}</p>
+
+                        <p>E-mail: {{ row[2]}}</p>
+
+                        <p>Mobile No: {{ row[3]}}</p>
+
+                        <p>Address: {{ row[4]}}</p>
+
+                {% endfor %}
+
+        </td>
+
+        </tr>
+        </table>
+    </div>
+    <div id="content">
+      <h1 style= "margin-top: 10px; text-align: center">My Posted Advertise</h1>
+       <main>
+      <div>
+      {% for d in li %}
+     <a title="Post" >
+
+			<article onclick="getvalue(this)">
+
+               {% for row in data_n[d] %}
+                    {% if row==data_n[d][0] %}
+                     <p style="color: white">Address : {{data_n[d][0]}}</p>
+                     {% elif row==data_n[d][1] %}
+                     <p style="color: white">Housetype : {{ data_n[d][1]}}</p>
+                     {% elif row==data_n[d][2] %}
+                     <p style="color: white">Rentfee : {{ data_n[d][2]}}</p>
+                     {% elif row==data_n[d][3] %}
+                     <p style="color: white">Id : {{ data_n[d][3]}}</p>
+                     {% endif%}
+                {% endfor %}
+
+
+				<figure>
+
+				    <img src="{{url_for('send_image',filename=img[d-l])}}">
+				    <p>{{ d }}</p>
+
+					<figcaption>Post</figcaption>
+				</figure>
+			</article>
+			</a>
+		{% endfor %}
+		</div>
+		</main>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

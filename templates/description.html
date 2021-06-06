@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+
+Six Shooter Media Free Template
+http://www.sixshootermedia.com/free-templates/
+Released for free under a Creative Commons Attribution 2.5 License
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="" />
+    <title>EasyHome</title>
+<link href="../static/1.css?version=1" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+
+    function myvalue() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+           // Typical action to be performed when the document is ready:
+           // document.getElementById("demo").innerHTML = xhttp.responseText;
+        }
+    };
+      // alert(document.getElementById("ID").value);
+      x=document.getElementById("Id").innerText;
+      console.log(x);
+    xhttp.open("GET", "http://127.0.0.1:5000/update?query="+x, true);
+    xhttp.send();
+    }
+    </script>
+
+</head>
+<body>
+<div id="header">
+  <!-- This is where the image of the house goes -->
+  <p style="text-align:center;"><img src="../static/images/easyhome_logo.png"></p>
+
+</div>
+
+<!--h1 class="main_title"><a href="#">EasyHome</a></h1-->
+<div id="navigation" style="margin-top: -155px">
+          <ul id="nav">
+            <li><a href="/" style="font-size: 11px">Home</a></li>
+            <li><a href="#" style="font-size: 11px">About</a></li>
+            {% if session.logged_in %}
+            <li><a href="/post_ad" style="font-size: 11px">Post Your Ad</a></li>
+            {% else %}
+            <li><a href="/logintransparent" style="font-size: 11px">Post Your Ad</a></li>
+            {% endif %}            {% if session.logged_in %}
+              <li><a href="/profile" style="font-size: 11px">My Profile</a></li>
+              <li><a href="/logout" style="font-size: 11px">Logout</a></li>
+            {% else %}
+              <li><a href="/registertrans" style="font-size: 11px">Register</a></li>
+              <li><a href="/logintransparent" style="font-size: 11px">Login</a></li>
+            {% endif %}
+
+          </ul>
+        </div>
+<div id="container">
+    <div>
+        <table style="width: 100%; height: 5cm">
+            <tr >
+                <td style="width: 40%; text-align: center">
+
+
+                </td>
+
+                <td style="width: 60%; text-align: left">
+                <p style="text-align: right">
+             <button autofocus="autofocus" style="border-radius: 1px"onclick="myvalue()">Save</button>
+             </p>
+
+
+                {% for row in g_data[0] %}
+
+                    {% if row==g_data[0][0] %}
+                     <p style="color: white">Posted By: {{g_data[0][0]}}</p>
+                     {% elif row==g_data[0][1] %}
+                     <p style="color: white">Address : {{g_data[0][1]}}</p>
+                     {% elif row==g_data[0][2] %}
+                     <p style="color: white">Housetype : {{ g_data[0][2]}}</p>
+                     {% elif row==g_data[0][3] %}
+                     <p style="color: white">Contact : {{ g_data[0][3]}}</p>
+                     {% elif row==g_data[0][4] %}
+                     <p id="Id" style="color: white">Id : {{ g_data[0][4]}}</p>
+                     {% endif%}
+                {% endfor %}
+
+                </td>
+
+
+            </tr>
+        </table>
+
+    </div>
+
+    <div style="width: 100%; margin-top: 5px">
+        <h1 style="text-align: center; margin-top: 20px"><u>Description</u></h1>
+
+        <table style="width: 100%; height: 5cm; margin-top: 2px">
+            <tr >
+                <td>
+                 {% for row in des_data[0] %}
+                    {% if row==des_data[0][0] %}
+                     <p style="color: white">{{des_data[0][0]}}</p>
+                     {% endif%}
+                {% endfor %}
+
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+</div>
+</body>
+</html>
