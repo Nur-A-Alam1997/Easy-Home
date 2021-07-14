@@ -24,6 +24,7 @@ Released for free under a Creative Commons Attribution 2.5 License
     }
 
 </script>
+
 <style>
 body{
 			font: 1rem/1.6 "Helvetica", Sans-serif;
@@ -106,13 +107,13 @@ body{
     <div id="sidebar">
       <h1>Cities</h1>
     <ul>
-      <li><a href="/search_dhaka" style="font-size: 18px">Dhaka</a></li>
-      <li><a href="/search_sylhet" style="font-size: 18px">Sylhet</a></li>
-      <li><a href="/search_khulna" style="font-size: 18px">Khulna</a></li>
-      <li><a href="/search_rangpur" style="font-size: 18px">Rangpur</a></li>
-      <li><a href="/search_rajshahi" style="font-size: 18px">Rajshahi</a></li>
-      <li><a href="/search_barisal" style="font-size: 18px">Barisal</a></li>
-      <li><a href="/search_chittagong" style="font-size: 18px">Chittagong</a></li>
+      <li><a href="/search/dhaka" style="font-size: 18px">Dhaka</a></li>
+      <li><a href="/search/sylhet" style="font-size: 18px">Sylhet</a></li>
+      <li><a href="/search/khulna" style="font-size: 18px">Khulna</a></li>
+      <li><a href="/search/rangpur" style="font-size: 18px">Rangpur</a></li>
+      <li><a href="/search/rajshahi" style="font-size: 18px">Rajshahi</a></li>
+      <li><a href="/search/barisal" style="font-size: 18px">Barisal</a></li>
+      <li><a href="/search/chittagong" style="font-size: 18px">Chittagong</a></li>
 
     </ul>
     </div>
@@ -122,9 +123,10 @@ body{
        <main>
       <div>
       {% for d in li %}
-    <a title="Post">
+    <a title="Post" href="/description/{{ data[d][3]}}">
 
-			<article  onclick="getvalue(this)">
+			<!-- <article  onclick="getvalue(this)"> -->
+			<article  >
 
                 {% for row in data[d] %}
                     {% if row==data[d][0] %}

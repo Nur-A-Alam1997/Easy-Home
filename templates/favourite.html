@@ -47,7 +47,7 @@ body{
 
 		}
 
-		a[title] figure img{
+	 figure img{
 			width: 360px;
 			height: 280px;
 			margin-top:1rem;
@@ -109,9 +109,9 @@ body{
        <main>
       <div>
       {% for d in li %}
-    <a title="Post">
-
-			<article onclick="getvalue(this)">
+    <!-- <a title="Post"> -->
+    <a title="Post" href="/description/{{ data[d][3]}}">
+			<article >
 
                 {% for row in data[d] %}
                     {% if row==data[d][0] %}
@@ -128,7 +128,7 @@ body{
 
 				<figure>
 
-				    <img src="{{url_for('send_image4',filename=img[d-l])}}">
+				    <img src="/{{data[d][3]}}.jpg">
 				    <p>{{ d }}</p>
 
 					<figcaption>Post</figcaption>

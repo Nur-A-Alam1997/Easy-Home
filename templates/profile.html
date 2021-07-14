@@ -175,9 +175,9 @@ body{
        <main>
       <div>
       {% for d in li %}
-     <a title="Post" >
-
-			<article onclick="getvalue(this)">
+     <!-- <a title="Post" > -->
+      <a title="Post" href="/description/{{ data_n[d][3]}}">
+			<article >
 
                {% for row in data_n[d] %}
                     {% if row==data_n[d][0] %}
