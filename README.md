@@ -13,8 +13,8 @@
 >python EasyHome.py
 
 # Home
-![alt text](https://github.com/Nur-A-Alam1997/Easy-Home/blob/flask-socketIO-chatApp/Easy-Home/screenshots/EasyHome.png?raw=true)
+![alt text](https://github.com/Nur-A-Alam1997/Easy-Home/blob/Easy-Home/Easy-Home/screenshots/EasyHome.png?raw=true)
 
 # Ads
 
-![alt text](https://github.com/Nur-A-Alam1997/Easy-Home/blob/flask-socketIO-chatApp/Easy-Home/screenshots/ads.png?raw=true)
+![alt text](https://github.com/Nur-A-Alam1997/Easy-Home/blob/Easy-Home/Easy-Home/screenshots/ads.png?raw=true)
