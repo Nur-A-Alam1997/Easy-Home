@@ -1,9 +1,14 @@
 from django.contrib import admin
-from .models import Registration, Advertisement, Images
+from .models import Profile, Advertisement, Images, Favourite
 # Register your models here.
 
-# admin.site.register(Registration)
+# admin.site.register(Profile)
 # admin.site.register(Advertisement)
+
+
+@admin.register(Favourite)
+class FavouriteAdmin(admin.ModelAdmin):
+    pass
 
 
 class ImagesAdmin(admin.StackedInline):
@@ -13,8 +18,9 @@ class ImagesAdmin(admin.StackedInline):
         max_num = 2
         return max_num
 
-@admin.register(Registration)
-class RegistrationAdmin(admin.ModelAdmin):
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
     pass
 
 
@@ -23,7 +29,8 @@ class AdvertisementAdmin(admin.ModelAdmin):
     inlines = [ImagesAdmin]
 
     class Meta:
-       model = Advertisement
+        model = Advertisement
+
 
 @admin.register(Images)
 class ImagesAdmin(admin.ModelAdmin):
