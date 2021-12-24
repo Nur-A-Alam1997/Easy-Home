@@ -1,0 +1,5 @@
+# django-admin startproject testDjango .
+# python3 manage.py startapp test_app
+# python3 manage.py runserver
+
+**/__pycache__

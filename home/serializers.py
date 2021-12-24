@@ -4,6 +4,7 @@ from .models import (Profile,
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    user = serializers.IntegerField(read_only= True)
     class Meta:
         model = Profile
         fields = ['id', 'mobile', 'address', 'created_at', 'user']

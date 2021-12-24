@@ -156,9 +156,6 @@ AUTH_USER_MODEL = 'core.User'
 DJOSER = {
     'SERIALIZERS': {
         'user_create': 'core.serializers.UserCreateSerializer',
-        # 'user_create_password_retype': 'djoser.serializers.UserCreatePasswordRetypeSerializer',
-        # 'user_delete': 'djoser.serializers.UserDeleteSerializer',
-        # 'user': 'djoser.serializers.UserSerializer',
         'current_user': 'core.serializers.UserSerializer',
     }
 
