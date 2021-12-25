@@ -35,11 +35,12 @@ class Advertisement(models.Model):
         ('black', 'BLACK'),
     )
 
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
+    house_address = models.TextField(max_length=255)
+    owner = models.ForeignKey(Profile,
+                              on_delete=models.CASCADE)
     house_type = models.CharField(
         max_length=6, choices=COLOR_CHOICES, default='green')
-    house_address = models.TextField(max_length=255)
     rent_fee = models.PositiveIntegerField(
         default=10, validators=[MinValueValidator(5000), MaxValueValidator(100000)])
     image = models.ImageField(

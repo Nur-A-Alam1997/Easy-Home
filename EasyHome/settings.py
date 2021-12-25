@@ -160,3 +160,4 @@ DJOSER = {
     }
 
 }
+# AUTHENTICATION_BACKENDS = ['core.backend.EmailBackend']
