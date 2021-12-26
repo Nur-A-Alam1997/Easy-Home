@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 # from django.http import HttpResponse, JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly,AllowAny
 from rest_framework.views import APIView
 from .models import Profile, Advertisement, Favourite
 from .serializers import (FavouriteItemSerializer,
                           ProfileSerializer, AdvertisementSerializer, FavouriteSerializer)
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
 # from .shortcuts import get_object_as_list_or_404
 # Create your views here.
 
@@ -22,7 +22,7 @@ class ProfileListView(APIView):
 
 class AdvertisementListView(APIView):
 
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         advertisement = Advertisement.objects.all()
@@ -39,6 +39,9 @@ class AdvertisementListView(APIView):
 
 
 class AdvertisementItemView(APIView):
+    # permission_classes =[IsAuthenticatedOrReadOnly]
+    permission_classes =[IsOwnerOrAdminOrReadOnly]
+    # @permission_classes([IsOwner])
     def get(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
         if not advertisement:
@@ -46,6 +49,7 @@ class AdvertisementItemView(APIView):
         serializer = AdvertisementSerializer(advertisement)
 
         return Response(serializer.data)
+
 
     def put(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
