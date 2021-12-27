@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from .models import Profile, Advertisement, Images, Favourite
-# Register your models here.
 
+# Register your models here.
+User = get_user_model()
 # admin.site.register(Profile)
 # admin.site.register(Advertisement)
 
@@ -21,11 +23,18 @@ class ImagesAdmin(admin.StackedInline):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    pass
+    model = User
+    list_display = ["user", "address"]
+    list_filter = ["user", "address"]
+    list_per_page = 10
 
 
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):
+
+    list_display = ["title", "house_address", "rent_fee", "owner"]
+    list_filter = ["house_address", "owner"]
+    list_per_page = 10
     inlines = [ImagesAdmin]
 
     class Meta:

@@ -7,6 +7,8 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
+
+    ordering = ['date_joined']
     add_fieldsets = (
         (None, {
             'classes': ('wide',),

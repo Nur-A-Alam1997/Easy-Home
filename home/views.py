@@ -1,13 +1,23 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
+
 # from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly,AllowAny
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+    AllowAny,
+)
 from rest_framework.views import APIView
 from .models import Profile, Advertisement, Favourite
-from .serializers import (FavouriteItemSerializer,
-                          ProfileSerializer, AdvertisementSerializer, FavouriteSerializer)
+from .serializers import (
+    FavouriteItemSerializer,
+    ProfileSerializer,
+    AdvertisementSerializer,
+    FavouriteSerializer,
+)
 from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
+
 # from .shortcuts import get_object_as_list_or_404
 # Create your views here.
 
@@ -22,7 +32,7 @@ class ProfileListView(APIView):
 
 class AdvertisementListView(APIView):
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         advertisement = Advertisement.objects.all()
@@ -31,7 +41,9 @@ class AdvertisementListView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = AdvertisementSerializer(data=request.data,)
+        serializer = AdvertisementSerializer(
+            data=request.data,
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -39,9 +51,8 @@ class AdvertisementListView(APIView):
 
 
 class AdvertisementItemView(APIView):
-    # permission_classes =[IsAuthenticatedOrReadOnly]
-    permission_classes =[IsOwnerOrAdminOrReadOnly]
-    # @permission_classes([IsOwner])
+    permission_classes = [IsOwnerOrAdminOrReadOnly]
+
     def get(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
         if not advertisement:
@@ -49,7 +60,6 @@ class AdvertisementItemView(APIView):
         serializer = AdvertisementSerializer(advertisement)
 
         return Response(serializer.data)
-
 
     def put(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
@@ -75,7 +85,9 @@ class FavouriteListView(APIView):
     def get(self, request):
 
         if request.user.is_staff:
-            favourite = get_list_or_404(Favourite,)
+            favourite = get_list_or_404(
+                Favourite,
+            )
             serializer = FavouriteSerializer(favourite, many=True)
             return Response(serializer.data)
 
@@ -98,24 +110,22 @@ class FavouriteItemView(APIView):
             return Response(serializer.data)
 
         profile_id = get_object_or_404(Profile, user_id=user.id)
-        favourite = get_object_or_404(Favourite, pk = id,favourite_owner = profile_id)
-        serializer = FavouriteItemSerializer(favourite,)
+        favourite = get_object_or_404(Favourite, pk=id, favourite_owner=profile_id)
+        serializer = FavouriteItemSerializer(
+            favourite,
+        )
         return Response(serializer.data)
 
 
 @api_view()
 def image(request):
-    user = Profile.objects.filter(username='Arpa').first()
+    user = Profile.objects.filter(username="Arpa").first()
     print(user.username, user.id)
-    advertisements = Advertisement.objects.select_related('owner').first()
+    advertisements = Advertisement.objects.select_related("owner").first()
     print(type(advertisements), type(user))
-    favourite = Favourite(
-        advertisement=advertisements,
-        favourite_owner=user
-    )
+    favourite = Favourite(advertisement=advertisements, favourite_owner=user)
     favourite.save()
-    favourite = Favourite.objects.select_related(
-        'advertisement', 'favourite_owner')
+    favourite = Favourite.objects.select_related("advertisement", "favourite_owner")
 
     print(favourite)
     # for fav in favourite:
@@ -125,4 +135,4 @@ def image(request):
     # for ads in advertisements:
     #     print(ads.id)
 
-    return Response(request, 'home.html', {'user': user})
+    return Response(request, "home.html", {"user": user})
