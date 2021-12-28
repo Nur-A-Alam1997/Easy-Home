@@ -26,14 +26,18 @@ class ProfileAdmin(admin.ModelAdmin):
     model = User
     list_display = ["user", "address"]
     list_filter = ["user", "address"]
+    search_fields = [
+        "user",
+    ]
     list_per_page = 10
 
 
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):
 
-    list_display = ["title", "house_address", "rent_fee", "owner"]
+    list_display = ["id", "title", "house_address", "rent_fee", "owner"]
     list_filter = ["house_address", "owner"]
+    search_fields = ["title", "rent_fee", "owner__user__username"]
     list_per_page = 10
     inlines = [ImagesAdmin]
 

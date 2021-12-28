@@ -27,6 +27,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class AdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertisement
+        owner = serializers.IntegerField(write_only = False)
         fields = ['id', 'owner', 'title', 'house_type',
                   'house_address', 'rent_fee', 'image']
 

@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
+import django_filters.rest_framework
 
 # from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view, permission_classes, action
@@ -9,6 +10,8 @@ from rest_framework.permissions import (
     AllowAny,
 )
 from rest_framework.views import APIView
+from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Profile, Advertisement, Favourite
 from .serializers import (
     FavouriteItemSerializer,
@@ -17,8 +20,9 @@ from .serializers import (
     FavouriteSerializer,
 )
 from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
+from .pagination import DefaultPagination
 
-# from .shortcuts import get_object_as_list_or_404
+
 # Create your views here.
 
 
@@ -30,15 +34,21 @@ class ProfileListView(APIView):
         return Response(serializer.data)
 
 
-class AdvertisementListView(APIView):
+class AdvertisementListView(generics.ListAPIView):
 
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    queryset = Advertisement.objects.all()
+    serializer_class = AdvertisementSerializer
+    filterset_fields = ["title", "rent_fee"]
+    search_fields = ["title", "rent_fee"]
+    ordering_fields = ["title"]
+    pagination_class = DefaultPagination
 
-    def get(self, request):
-        advertisement = Advertisement.objects.all()
-        serializer = AdvertisementSerializer(advertisement, many=True)
 
-        return Response(serializer.data)
+class AdvertisementCreateView(APIView):
+
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = AdvertisementSerializer(
@@ -84,14 +94,12 @@ class FavouriteListView(APIView):
 
     def get(self, request):
 
-        if request.user.is_staff:
-            favourite = get_list_or_404(
-                Favourite,
-            )
+        user = self.request.user
+        if user.is_staff:
+            favourite = get_list_or_404(Favourite)
             serializer = FavouriteSerializer(favourite, many=True)
             return Response(serializer.data)
 
-        user = self.request.user
         profile_id = get_object_or_404(Profile, user_id=user.id)
         favourite = get_list_or_404(Favourite, favourite_owner=profile_id)
         serializer = FavouriteSerializer(favourite, many=True)
@@ -111,9 +119,7 @@ class FavouriteItemView(APIView):
 
         profile_id = get_object_or_404(Profile, user_id=user.id)
         favourite = get_object_or_404(Favourite, pk=id, favourite_owner=profile_id)
-        serializer = FavouriteItemSerializer(
-            favourite,
-        )
+        serializer = FavouriteItemSerializer(favourite)
         return Response(serializer.data)
 
 
