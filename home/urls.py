@@ -7,6 +7,7 @@ urlpatterns = [
     path('advertisement/create/', views.AdvertisementCreateView.as_view(), name='home-advertisement-create'),
     path('favourite/', views.FavouriteListView.as_view(), name='home-favourite'),
     path('favourite/<int:id>/', views.FavouriteItemView.as_view(), name='home-favourite-item'),
+    path('favourite/create/', views.FavouriteItemCreate.as_view(), name='home-favourite-item-create'),
     path('advertisement/<int:id>/', views.AdvertisementItemView.as_view(), name='home-advertiesement-item'),
     path('image/', views.image, name='home-image'),
 ]

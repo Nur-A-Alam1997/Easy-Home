@@ -55,24 +55,22 @@ class AdvertisementCreateView(APIView):
     def post(self, request):
         user = request.user
         profile_id = get_object_or_404(Profile, user_id=user.id)
-        request.data._mutable = True
-        if request.data.get("images"):
-            images = request.data.pop("images")
-            print(images)
         adv_serializer = AdvertisementCreateSerializer(
             data=request.data,
             context={"owner": profile_id},
         )
         adv_serializer.is_valid(raise_exception=True)
         adv_serializer.save()
-        if images:
-            advertisement = get_object_or_404(Advertisement, pk =adv_serializer.data['id'])
-            for img in images:
-                data = {"images": img, "advertisement": advertisement.id}
-                image_serializer = ImageSerializer(data = data)
+        request.data._mutable = True
+        image_array = request.data.pop("images") if request.data.get("images") else None
+        if image_array and len(image_array) < 3:
+            advertisement_id = adv_serializer.data["id"]
+            for img in image_array:
+                data = {"images": img, "advertisement": advertisement_id}
+                image_serializer = ImageSerializer(data=data)
                 image_serializer.is_valid(raise_exception=True)
                 image_serializer.save()
-                adv_serializer.data['images'].append(image_serializer.data["images"])
+                adv_serializer.data["images"].append(image_serializer.data["images"])
         return Response(adv_serializer.data)
 
 
@@ -130,6 +128,35 @@ class FavouriteItemView(APIView):
         profile_id = get_object_or_404(Profile, user_id=user.id)
         favourite = get_object_or_404(Favourite, pk=id, favourite_owner=profile_id)
         serializer = FavouriteItemSerializer(favourite)
+        return Response(serializer.data)
+
+
+class FavouriteItemCreate(APIView):
+    def post(self, request):
+        user = self.request.user
+        adv_id = self.request.data.get("id")
+        if not adv_id:
+            return Response({"id": "This field is required"})
+        profile = get_object_or_404(Profile, user_id=user.id)
+        favourite = (
+            Favourite.objects.select_related("advertisement", "favourite_owner")
+            .filter(advertisement__pk=adv_id, favourite_owner__pk=profile.id)
+            .first()
+        )
+        if favourite:
+            serializer = FavouriteItemSerializer(
+                favourite,
+            )
+            return Response(serializer.data)
+            
+        advertisement = get_object_or_404(Advertisement, pk=adv_id)
+        favourite = {
+            "advertisement": advertisement,
+            "favourite_owner": profile,
+        }
+        serializer = FavouriteItemSerializer(
+            favourite,
+        )
         return Response(serializer.data)
 
 
