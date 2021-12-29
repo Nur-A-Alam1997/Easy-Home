@@ -3,9 +3,10 @@
 # python3 manage.py runserver
 
 **/__pycache__
-#rsync -avz  --exclude venv  ~/Django/ /home/nur/Downloads/Easy-Home/ #copy file
-#rsync -avz --exclude subdirectory5 --exclude subdirectory7 /home/directory/ target-path
-#find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf #dangerous
+# rsync -avz  --exclude venv  ~/Django/ /home/nur/Downloads/Easy-Home/ #copy file
+# rsync -avz  --exclude venv  /home/nur/Downloads/Django/ /home/nur/Downloads/Easy-Home/
+# rsync -avz --exclude subdirectory5 --exclude subdirectory7 /home/directory/ target-path
+# find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf #dangerous
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

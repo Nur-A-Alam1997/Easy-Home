@@ -17,7 +17,9 @@ from .serializers import (
     FavouriteItemSerializer,
     ProfileSerializer,
     AdvertisementSerializer,
+    AdvertisementCreateSerializer,
     FavouriteSerializer,
+    ImageSerializer,
 )
 from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
 from .pagination import DefaultPagination
@@ -51,13 +53,27 @@ class AdvertisementCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = AdvertisementSerializer(
+        user = request.user
+        profile_id = get_object_or_404(Profile, user_id=user.id)
+        request.data._mutable = True
+        if request.data.get("images"):
+            images = request.data.pop("images")
+            print(images)
+        adv_serializer = AdvertisementCreateSerializer(
             data=request.data,
+            context={"owner": profile_id},
         )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data)
+        adv_serializer.is_valid(raise_exception=True)
+        adv_serializer.save()
+        if images:
+            advertisement = get_object_or_404(Advertisement, pk =adv_serializer.data['id'])
+            for img in images:
+                data = {"images": img, "advertisement": advertisement.id}
+                image_serializer = ImageSerializer(data = data)
+                image_serializer.is_valid(raise_exception=True)
+                image_serializer.save()
+                adv_serializer.data['images'].append(image_serializer.data["images"])
+        return Response(adv_serializer.data)
 
 
 class AdvertisementItemView(APIView):
@@ -65,24 +81,18 @@ class AdvertisementItemView(APIView):
 
     def get(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
-        if not advertisement:
-            return Response({"error": f"{id} doesn't exist"})
         serializer = AdvertisementSerializer(advertisement)
 
         return Response(serializer.data)
 
     def put(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
-        if not advertisement:
-            return Response({"error": f"{id} doesn't exist"})
         serializer = AdvertisementSerializer(advertisement)
 
         return Response(serializer.data)
 
     def delete(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
-        if not advertisement:
-            return Response({"error": f"{id} doesn't exist"})
         serializer = AdvertisementSerializer(advertisement)
         advertisement.delete()
 

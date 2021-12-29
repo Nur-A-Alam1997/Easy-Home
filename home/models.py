@@ -60,7 +60,7 @@ class Advertisement(models.Model):
 
 class Images(models.Model):
     advertisement = models.ForeignKey(
-        Advertisement, default=None, on_delete=models.CASCADE, related_name='+')
+        Advertisement, on_delete=models.CASCADE, related_name='images')
     images = models.FileField(upload_to='images/')
 
     class Meta:
