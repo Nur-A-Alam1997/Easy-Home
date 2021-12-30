@@ -33,11 +33,10 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class AdvertisementSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many = True)
-
+    images = ImageSerializer(many = True,required=False, )
+    owner = ProfileSerializer(read_only=True)
     class Meta:
         model = Advertisement
-        # depth = 1
         fields = [
             "id",
             "owner",
@@ -48,6 +47,11 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             "image",
             "images",
         ]
+
+    # def validate(self, data):
+    #     owner = self.context["owner"]
+    #     data["owner"] = owner
+    #     return data
 
 
 class AdvertisementCreateSerializer(serializers.ModelSerializer):
@@ -86,6 +90,14 @@ class FavouriteSerializer(serializers.ModelSerializer):
 class FavouriteItemSerializer(serializers.ModelSerializer):
     advertisement = AdvertisementSerializer()
     favourite_owner = ProfileSerializer()
+
+    class Meta:
+        model = Favourite
+        fields = ["id", "favourite_owner", "advertisement"]
+
+class FavouriteItemCreateSerializer(serializers.ModelSerializer):
+    advertisement = AdvertisementSerializer
+    favourite_owner = ProfileSerializer
 
     class Meta:
         model = Favourite

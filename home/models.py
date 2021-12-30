@@ -43,7 +43,7 @@ class Advertisement(models.Model):
     house_type = models.CharField(
         max_length=6, choices=COLOR_CHOICES, default='green')
     rent_fee = models.PositiveIntegerField(
-        default=10, validators=[MinValueValidator(5000), MaxValueValidator(100000)])
+        default=10, validators=[MinValueValidator(10000), MaxValueValidator(100000)])
     image = models.ImageField(
         upload_to='images/', height_field=None, width_field=None, max_length=None)
 

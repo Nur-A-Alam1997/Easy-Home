@@ -10,16 +10,17 @@ from rest_framework.permissions import (
     AllowAny,
 )
 from rest_framework.views import APIView
-from rest_framework import generics
+from rest_framework import generics, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Profile, Advertisement, Favourite
 from .serializers import (
-    FavouriteItemSerializer,
     ProfileSerializer,
     AdvertisementSerializer,
     AdvertisementCreateSerializer,
-    FavouriteSerializer,
     ImageSerializer,
+    FavouriteSerializer,
+    FavouriteItemSerializer,
+    FavouriteItemCreateSerializer,
 )
 from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
 from .pagination import DefaultPagination
@@ -80,13 +81,15 @@ class AdvertisementItemView(APIView):
     def get(self, request, id):
         advertisement = get_object_or_404(Advertisement, pk=id)
         serializer = AdvertisementSerializer(advertisement)
-
         return Response(serializer.data)
 
     def put(self, request, id):
-        advertisement = get_object_or_404(Advertisement, pk=id)
-        serializer = AdvertisementSerializer(advertisement)
-
+        user = self.request.user
+        profile = get_object_or_404(Profile, user_id=user.id)
+        advertisement = get_object_or_404(Advertisement, pk=id, owner=profile)
+        serializer = AdvertisementSerializer(advertisement,data = request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
 
     def delete(self, request, id):
@@ -130,13 +133,27 @@ class FavouriteItemView(APIView):
         serializer = FavouriteItemSerializer(favourite)
         return Response(serializer.data)
 
+    def delete(self, request, id):
+        user = self.request.user
+        if user.is_staff:
+            favourite = get_object_or_404(Favourite, pk=id).delete()
+            serializer = FavouriteItemSerializer(favourite)
+            serializer.delete()
+            return Response(serializer.data)
+
+        profile_id = get_object_or_404(Profile, user_id=user.id)
+        favourite = get_object_or_404(
+            Favourite, pk=id, favourite_owner=profile_id
+        ).delete()
+        return Response(serializer.data)
+
 
 class FavouriteItemCreate(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         user = self.request.user
         adv_id = self.request.data.get("id")
-        if not adv_id:
-            return Response({"id": "This field is required"})
         profile = get_object_or_404(Profile, user_id=user.id)
         favourite = (
             Favourite.objects.select_related("advertisement", "favourite_owner")
@@ -144,20 +161,20 @@ class FavouriteItemCreate(APIView):
             .first()
         )
         if favourite:
-            serializer = FavouriteItemSerializer(
-                favourite,
-            )
+            serializer = FavouriteItemSerializer(favourite)
             return Response(serializer.data)
-            
         advertisement = get_object_or_404(Advertisement, pk=adv_id)
         favourite = {
-            "advertisement": advertisement,
-            "favourite_owner": profile,
+            "advertisement": adv_id,
+            "favourite_owner": profile.id,
         }
-        serializer = FavouriteItemSerializer(
-            favourite,
-        )
-        return Response(serializer.data)
+        serializer = FavouriteItemCreateSerializer(data = favourite)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data,status.HTTP_201_CREATED)
+
+
+
 
 
 @api_view()
