@@ -320,23 +320,15 @@ def loginmain():
     if session.get("username"):
         return redirect(url_for("home"))
     if request.method == 'POST':
-        # Get Form Fields
         username = request.form['username']
         password_candidate = request.form['password']
-
-        # Create cursor
-        # cur = mysql.connection.cursor()
         with conn:
-            # Get user by username
             result = db.engine.execute(
                 "SELECT * FROM registration_table WHERE username = ?", [username])
-
             if result > 0:
-                # Get stored hash
                 data = cur.fetchone()
                 password = data[3]
 
-                # Compare Passwords
                 if sha256_crypt.verify(password_candidate, password):
                     # Passed
                     session['logged_in'] = True
