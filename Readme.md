@@ -14,7 +14,7 @@
 ![alt text](home.png?raw=true)
 
 # install
-create a virtual environment and activate (virtualenv recomended)
+create a virtual environment and activate (virtualenv recommended)
 > pip install -r requirements.txt
 
 ### build:
