@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
+    'django_extensions',
     'home',
     'core',
     'django_filters',
@@ -159,7 +160,11 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create': 'core.serializers.UserCreateSerializer',
         'current_user': 'core.serializers.UserSerializer',
-    }
+    },
 
+}
+GRAPH_MODELS = {
+#   'all_applications': True,
+  'group_models': True,
 }
 # AUTHENTICATION_BACKENDS = ['core.backend.EmailBackend']

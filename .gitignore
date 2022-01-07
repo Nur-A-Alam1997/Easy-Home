@@ -164,3 +164,7 @@ cython_debug/
 #selected
 *.ipynb
 *.csv
+ngrok.py
+commands.ole
+home.dot
+my_project_visualized.png

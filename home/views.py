@@ -22,7 +22,7 @@ from .serializers import (
     FavouriteItemSerializer,
     FavouriteItemCreateSerializer,
 )
-from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly, IsOwnerOrAdminOnly
 from .pagination import DefaultPagination
 
 
@@ -37,7 +37,7 @@ class ProfileListView(APIView):
         return Response(serializer.data)
 
 
-class AdvertisementListView(generics.ListAPIView):
+class DashboardListView(generics.ListAPIView):
 
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]
@@ -87,16 +87,29 @@ class AdvertisementItemView(APIView):
         user = self.request.user
         profile = get_object_or_404(Profile, user_id=user.id)
         advertisement = get_object_or_404(Advertisement, pk=id, owner=profile)
-        serializer = AdvertisementSerializer(advertisement,data = request.data)
+        serializer = AdvertisementSerializer(advertisement, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
     def delete(self, request, id):
-        advertisement = get_object_or_404(Advertisement, pk=id)
+        user = self.request.user
+        profile = get_object_or_404(Profile, user_id=user.id)
+        advertisement = get_object_or_404(Advertisement, pk=id, owner=profile)
         serializer = AdvertisementSerializer(advertisement)
         advertisement.delete()
 
+        return Response(serializer.data)
+
+
+class AdvertisementListView(APIView):
+    permission_classes = [IsOwnerOrAdminOnly]
+
+    def get(self, request):
+        user = self.request.user
+        profile_id = get_object_or_404(Profile, user_id=user.id)
+        advertisement = get_list_or_404(Advertisement,owner = profile_id)
+        serializer = AdvertisementSerializer(advertisement, many=True)
         return Response(serializer.data)
 
 
@@ -140,6 +153,7 @@ class FavouriteItemView(APIView):
             serializer = FavouriteItemSerializer(favourite)
             serializer.delete()
             return Response(serializer.data)
+        print("deleted")
 
         profile_id = get_object_or_404(Profile, user_id=user.id)
         favourite = get_object_or_404(
@@ -168,31 +182,13 @@ class FavouriteItemCreate(APIView):
             "advertisement": adv_id,
             "favourite_owner": profile.id,
         }
-        serializer = FavouriteItemCreateSerializer(data = favourite)
+        serializer = FavouriteItemCreateSerializer(data=favourite)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data,status.HTTP_201_CREATED)
-
-
-
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
 
 @api_view()
-def image(request):
-    user = Profile.objects.filter(username="Arpa").first()
-    print(user.username, user.id)
-    advertisements = Advertisement.objects.select_related("owner").first()
-    print(type(advertisements), type(user))
-    favourite = Favourite(advertisement=advertisements, favourite_owner=user)
-    favourite.save()
-    favourite = Favourite.objects.select_related("advertisement", "favourite_owner")
-
-    print(favourite)
-    # for fav in favourite:
-    #     print(fav.advertisement.id)
-    #     print(fav.favourite_owner.id)
-
-    # for ads in advertisements:
-    #     print(ads.id)
-
-    return Response(request, "home.html", {"user": user})
+def payment(request):
+    return render(request, template_name="home.html")
+    # (request, "home.html", {"user": user})
