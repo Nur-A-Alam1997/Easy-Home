@@ -166,5 +166,3 @@ cython_debug/
 *.csv
 ngrok.py
 commands.ole
-home.dot
-my_project_visualized.png

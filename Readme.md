@@ -2,10 +2,10 @@
 ## REST-api
 
 * House rent startup
-* Owner can add rent details along with multiple image and features
-* Authenticated user can create, edit, delete and also save product as a favourite
+* Owner can add rent details along with multiple images and features
+* Authenticated user can create, edit, delete advertisement and also save as a favourite
 * Admin support with django built in admin interface (customed) 
-* Search, filter functionality for theservice
+* Search, filter, Pagination functionality for the service
 * Tools–Python3.8, Django, Django Rest Framework, Postgres, Djoser, JWT,
 <!-- * demo b-kash payment integrated -->
 
@@ -14,7 +14,7 @@
 ![alt text](home.png?raw=true)
 
 # install
-create a virtual environment and activate (virtualenv recommended)
+create a virtual environment and activate (virtualenv recomended)
 > pip install -r requirements.txt
 
 ### build:
