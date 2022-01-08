@@ -46,6 +46,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             "rent_fee",
             "image",
             "images",
+            "status",
         ]
 
     # def validate(self, data):

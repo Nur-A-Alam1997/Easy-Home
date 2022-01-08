@@ -1,6 +1,6 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2022-01-07 15:31
+  // Created: 2022-01-08 13:40
   // Cli Options: home core
 
   fontname = "Roboto"
@@ -135,6 +135,14 @@ digraph model_graph {
       <FONT FACE="Roboto">rent_fee</FONT>
       </TD><TD ALIGN="LEFT">
       <FONT FACE="Roboto">PositiveIntegerField</FONT>
+      </TD></TR>
+    
+    
+    
+      <TR><TD ALIGN="LEFT" BORDER="0">
+      <FONT FACE="Roboto">status</FONT>
+      </TD><TD ALIGN="LEFT">
+      <FONT FACE="Roboto">BooleanField</FONT>
       </TD></TR>
     
     

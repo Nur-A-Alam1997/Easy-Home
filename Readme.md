@@ -55,6 +55,10 @@ create a virtual environment and activate (virtualenv recomended)
     ```
     http://127.0.0.1:8000/advertisement/create/<int:id>
     ```
+
+    ```
+    http://127.0.0.1:8000/home/advertisement/vendor/<int:id>
+    ```
     
     ```
     http://127.0.0.1:8000/favourite

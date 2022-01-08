@@ -22,7 +22,7 @@ from .serializers import (
     FavouriteItemSerializer,
     FavouriteItemCreateSerializer,
 )
-from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly, IsOwnerOrAdminOnly
+from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
 from .pagination import DefaultPagination
 
 
@@ -103,12 +103,12 @@ class AdvertisementItemView(APIView):
 
 
 class AdvertisementListView(APIView):
-    permission_classes = [IsOwnerOrAdminOnly]
+    permission_classes = [AllowAny]
 
-    def get(self, request):
-        user = self.request.user
-        profile_id = get_object_or_404(Profile, user_id=user.id)
-        advertisement = get_list_or_404(Advertisement,owner = profile_id)
+    def get(self, request, id):
+        # user = self.request.user
+        # profile_id = get_object_or_404(Profile, user_id=user.id)
+        advertisement = get_list_or_404(Advertisement,owner = id)
         serializer = AdvertisementSerializer(advertisement, many=True)
         return Response(serializer.data)
 
