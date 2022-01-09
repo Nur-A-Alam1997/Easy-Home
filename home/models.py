@@ -12,7 +12,7 @@ class Profile(models.Model):
     mobile = models.IntegerField(unique=True)
     address = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
 
     class Meta:
         verbose_name = "Profile"
@@ -38,7 +38,7 @@ class Advertisement(models.Model):
 
     title = models.CharField(max_length=50)
     house_address = models.TextField(max_length=255)
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="owner")
     house_type = models.CharField(max_length=6, choices=COLOR_CHOICES, default="green")
     rent_fee = models.PositiveIntegerField(
         default=10, validators=[MinValueValidator(10000), MaxValueValidator(100000)]

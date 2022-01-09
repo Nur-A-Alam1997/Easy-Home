@@ -1,16 +1,18 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
-import django_filters.rest_framework
+
+# import django_filters.rest_framework
 
 # from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.filters import SearchFilter,OrderingFilter
+from rest_framework import generics, status
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
     AllowAny,
 )
-from rest_framework.views import APIView
-from rest_framework import generics, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Profile, Advertisement, Favourite
 from .serializers import (
@@ -24,6 +26,7 @@ from .serializers import (
 )
 from .permissions import IsAdminOrReadOnly, IsOwnerOrAdminOrReadOnly
 from .pagination import DefaultPagination
+from .filter import AdvertisementFilter
 
 
 # Create your views here.
@@ -40,12 +43,19 @@ class ProfileListView(APIView):
 class DashboardListView(generics.ListAPIView):
 
     permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend]
-    queryset = Advertisement.objects.all()
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    queryset = Advertisement.objects.prefetch_related("owner__user", "images").all().order_by('id')
     serializer_class = AdvertisementSerializer
-    filterset_fields = ["title", "rent_fee"]
-    search_fields = ["title", "rent_fee"]
-    ordering_fields = ["title"]
+    # filterset_fields = ["title", "rent_fee", "status"]
+    filterset_class = AdvertisementFilter
+    search_fields = [
+        "title",
+        "rent_fee",
+        "house_type",
+        "house_address",
+        "owner__user__username",
+    ]
+    ordering_fields = ["id","status"]
     pagination_class = DefaultPagination
 
 
@@ -79,7 +89,9 @@ class AdvertisementItemView(APIView):
     permission_classes = [IsOwnerOrAdminOrReadOnly]
 
     def get(self, request, id):
-        advertisement = get_object_or_404(Advertisement, pk=id)
+        advertisement = get_object_or_404(
+            Advertisement.objects.prefetch_related("owner", "images"), pk=id
+        )
         serializer = AdvertisementSerializer(advertisement)
         return Response(serializer.data)
 
@@ -106,9 +118,9 @@ class AdvertisementListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, id):
-        # user = self.request.user
-        # profile_id = get_object_or_404(Profile, user_id=user.id)
-        advertisement = get_list_or_404(Advertisement,owner = id)
+        advertisement = get_list_or_404(
+            Advertisement.objects.prefetch_related("owner", "images"), owner=id
+        )
         serializer = AdvertisementSerializer(advertisement, many=True)
         return Response(serializer.data)
 

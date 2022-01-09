@@ -33,8 +33,8 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class AdvertisementSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many = True,required=False, )
-    owner = ProfileSerializer(read_only=True)
+    images = ImageSerializer(many=True, required=False, read_only= True)
+    owner = ProfileSerializer(read_only =True)
     class Meta:
         model = Advertisement
         fields = [
@@ -48,6 +48,12 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             "images",
             "status",
         ]
+    
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        del rep["owner"]["created_at"]
+        del rep["owner"]["user"]["email"]
+        return rep
 
     # def validate(self, data):
     #     owner = self.context["owner"]

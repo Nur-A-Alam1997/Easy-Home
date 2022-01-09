@@ -5,7 +5,7 @@
 * Owner can add rent details along with multiple images and features
 * Authenticated user can create, edit, delete advertisement and also save as a favourite
 * Admin support with django built in admin interface (customed) 
-* Search, filter, Pagination functionality for the service
+* Searching, filtering,Ordering, Pagination functionality for the service
 * Tools–Python3.8, Django, Django Rest Framework, Postgres, Djoser, JWT,
 <!-- * demo b-kash payment integrated -->
 
@@ -70,4 +70,12 @@ create a virtual environment and activate (virtualenv recomended)
     
     ```
     http://127.0.0.1:8000/favourite/<int:id>
+    ```
+
+    ```
+    http://127.0.0.1:8000/home/dashboard/?title=home&rent_fee__lt=&rent_fee__gt=&status= 
+    ```
+
+    ```
+     http://127.0.0.1:8000/home/dashboard/?search=balug
     ```
