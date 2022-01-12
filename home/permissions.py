@@ -12,7 +12,7 @@ class IsOwnerOrAdminOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_authenticated:
             return bool(
-                request.user.profile.id == obj.owner.id or request.user.is_staff
+                request.user.id == obj.owner.user.id or request.user.is_staff
             )
 
         if request.user and request.method == "GET":

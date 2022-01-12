@@ -13,6 +13,7 @@ class Profile(models.Model):
     address = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    slug= models.SlugField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = "Profile"
@@ -26,27 +27,32 @@ class Profile(models.Model):
         return reverse("Profile_detail", kwargs={"pk": self.pk})
 
 
+
+
 class Advertisement(models.Model):
 
-    COLOR_CHOICES = (
-        ("green", "GREEN"),
-        ("blue", "BLUE"),
-        ("red", "RED"),
-        ("orange", "ORANGE"),
-        ("black", "BLACK"),
+    HOUSE_CHOICES = (
+        ("sh", "SHARE"),
+        ("se", "SELL"),
+        ("re", "RENT"),
     )
 
     title = models.CharField(max_length=50)
-    house_address = models.TextField(max_length=255)
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="owner")
-    house_type = models.CharField(max_length=6, choices=COLOR_CHOICES, default="green")
-    rent_fee = models.PositiveIntegerField(
-        default=10, validators=[MinValueValidator(10000), MaxValueValidator(100000)]
+    location = models.TextField(max_length=255)
+    area = models.PositiveIntegerField(validators=[MinValueValidator(700), MaxValueValidator(100000)])
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="advertisement")
+    baths = models.PositiveIntegerField()
+    beds = models.PositiveIntegerField()
+    garages = models.PositiveIntegerField()
+    house_type = models.CharField(max_length=2, choices=HOUSE_CHOICES, default="re")
+    cost = models.PositiveIntegerField(
+        default=10000, validators=[MinValueValidator(5000), MaxValueValidator(100000)]
     )
     image = models.ImageField(
         upload_to="images/", height_field=None, width_field=None, max_length=None
     )
     status = models.BooleanField(default=False)
+    slug= models.SlugField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = "Advertisement"
@@ -63,8 +69,8 @@ class Images(models.Model):
     advertisement = models.ForeignKey(
         Advertisement, on_delete=models.CASCADE, related_name="images"
     )
-    images = models.FileField(upload_to="images/")
-
+    images = models.ImageField(upload_to="images/")
+    slug= models.SlugField(max_length=255, null=True, blank=True)
     class Meta:
         verbose_name = "Image"
         verbose_name_plural = "Images"
@@ -77,9 +83,9 @@ class Images(models.Model):
 
 class Favourite(models.Model):
 
-    advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE)
-    favourite_owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
-
+    advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name="favourite")
+    favourite_owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="favourite")
+    slug= models.SlugField(max_length=255, null=True, blank=True)
     class Meta:
         verbose_name = "Favourite"
         verbose_name_plural = "Favourites"

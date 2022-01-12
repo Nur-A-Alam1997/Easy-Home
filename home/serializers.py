@@ -19,40 +19,52 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     # user = serializers.IntegerField(read_only= True)
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Profile
         fields = ["id", "mobile", "address", "created_at", "user"]
 
 
+class ProfileCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ["id", "mobile", "address", "created_at"]
+    
+
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields = ["id", "images","advertisement"]
+        fields = ["id", "images", "advertisement"]
 
 
 class AdvertisementSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True, required=False, read_only= True)
-    owner = ProfileSerializer(read_only =True)
+    images = ImageSerializer(many=True, required=False, read_only=True)
+    owner = ProfileSerializer(read_only=True)
+
     class Meta:
         model = Advertisement
         fields = [
             "id",
-            "owner",
             "title",
+            "location",
+            "area",
+            "owner",
+            "beds",
+            "baths",
+            "garages",
             "house_type",
-            "house_address",
-            "rent_fee",
+            "cost",
             "image",
             "images",
             "status",
+            "slug",
         ]
-    
+
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         del rep["owner"]["created_at"]
-        del rep["owner"]["user"]["email"]
+        # del rep["owner"]["user"]["email"]
         return rep
 
     # def validate(self, data):
@@ -63,24 +75,28 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
 class AdvertisementCreateSerializer(serializers.ModelSerializer):
 
-    images = ImageSerializer(many=True, required=False, 
-                                                read_only=True)
-    depth =1
+    images = ImageSerializer(many=True, required=False, read_only=True)
+    depth = 1
+
     class Meta:
         model = Advertisement
         read_only_fields = ["id", "owner"]
         fields = [
             "id",
-            "owner",
             "title",
+            "location",
+            "area",
+            "owner",
+            "beds",
+            "baths",
+            "garages",
             "house_type",
-            "house_address",
-            "rent_fee",
+            "cost",
             "image",
             "images",
+            "status",
+            "slug",
         ]
-
-
 
     def validate(self, data):
         owner = self.context["owner"]
@@ -102,6 +118,7 @@ class FavouriteItemSerializer(serializers.ModelSerializer):
         model = Favourite
         fields = ["id", "favourite_owner", "advertisement"]
 
+
 class FavouriteItemCreateSerializer(serializers.ModelSerializer):
     advertisement = AdvertisementSerializer
     favourite_owner = ProfileSerializer
@@ -109,3 +126,9 @@ class FavouriteItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = ["id", "favourite_owner", "advertisement"]
+
+class FavouriteItemCreateFormSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=True)
+    class Meta:
+        model = Favourite
+        fields = ["id"]

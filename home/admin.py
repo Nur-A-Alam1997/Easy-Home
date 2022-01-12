@@ -35,9 +35,23 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):
 
-    list_display = ["id", "title", "house_address", "rent_fee", "owner"]
-    list_filter = ["house_address", "owner"]
-    search_fields = ["title", "rent_fee", "owner__user__username"]
+    list_display = [
+        "id",
+        "title",
+        "location",
+        "area",
+        "owner",
+        "beds",
+        "baths",
+        "garages",
+        "house_type",
+        "cost",
+        "image",
+        "status",
+        "slug",
+    ]
+    list_filter = ["owner"]
+    search_fields = ["title", "cost", "owner__user__username"]
     list_per_page = 10
     inlines = [ImagesAdmin]
 

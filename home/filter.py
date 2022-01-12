@@ -6,6 +6,6 @@ class AdvertisementFilter(FilterSet):
         model = Advertisement
         fields={
             'title':['exact'],
-            'rent_fee':['lt','gt'],
+            'cost':['lt','gt'],
             'status':['exact']
         }
