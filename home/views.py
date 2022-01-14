@@ -63,7 +63,7 @@ class DashboardListView(generics.ListAPIView):
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     queryset = (
-        Advertisement.objects.prefetch_related("owner__user", "images")
+        Advertisement.objects.select_related("owner__user").prefetch_related( "images")
         .all()
         .order_by("id")
     )

@@ -53,7 +53,8 @@ class Advertisement(models.Model):
     )
     status = models.BooleanField(default=False)
     slug= models.SlugField(max_length=255, null=True, blank=True)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    
     class Meta:
         verbose_name = "Advertisement"
         verbose_name_plural = "Advertisements"
